@@ -7,12 +7,9 @@ use Papimod\Dotenv\DotEnvModule;
 
 final class HttpErrorModule extends ApiModule
 {
-    public function __construct()
-    {
-        $this->prerequisite_list = [DotEnvModule::class];
+    public ?array $prerequisite_list = [DotEnvModule::class];
 
-        $this->event_list = [HttpErrorMiddlewareEvent::class];
-    }
+    public ?array $event_list = [HttpErrorMiddlewareEvent::class];
 
     public function configure(): void
     {

@@ -16,11 +16,15 @@ use PHPUnit\Framework\Attributes\Small;
 #[Small]
 final class HttpErrorModuleTest extends ApiBaseTestCase
 {
-    public function testFooApiCall(): void
+    public function setUp(): void
     {
+        parent::setUp();
         defined("ENVIRONMENT_DIRECTORY") || define("ENVIRONMENT_DIRECTORY", __DIR__);
         defined("ENVIRONMENT_FILE") || define("ENVIRONMENT_FILE", ".test.env");
+    }
 
+    public function testFooApiCall(): void
+    {
         $request = $this->createRequest('GET', '/foo');
         $response = ApiBuilder::getInstance()
             ->setModules([
@@ -36,9 +40,6 @@ final class HttpErrorModuleTest extends ApiBaseTestCase
 
     public function testNotFound(): void
     {
-        defined("ENVIRONMENT_DIRECTORY") || define("ENVIRONMENT_DIRECTORY", __DIR__);
-        defined("ENVIRONMENT_FILE") || define("ENVIRONMENT_FILE", ".test.env");
-
         $request = $this->createRequest('GET', '/notFoundEndpoint');
         $response = ApiBuilder::getInstance()
             ->setModules([
