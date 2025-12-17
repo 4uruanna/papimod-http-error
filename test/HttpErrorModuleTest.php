@@ -2,9 +2,10 @@
 
 namespace Papimod\HttpError\Test;
 
-use Papi\ApiBuilder;
-use Papi\Test\ApiBaseTestCase;
-use Papi\Test\foo\actions\FooAction;
+use Papi\enumerator\HttpMethod;
+use Papi\PapiBuilder;
+use Papi\Test\mock\FooGet;
+use Papi\Test\PapiTestCase;
 use Papimod\Dotenv\DotEnvModule;
 use Papimod\HttpError\HttpErrorHandler;
 use Papimod\HttpError\HttpErrorModel;
@@ -14,24 +15,27 @@ use PHPUnit\Framework\Attributes\Small;
 
 #[CoversClass(HttpErrorModule::class)]
 #[Small]
-final class HttpErrorModuleTest extends ApiBaseTestCase
+final class HttpErrorModuleTest extends PapiTestCase
 {
+    private PapiBuilder $builder;
+
     public function setUp(): void
     {
         parent::setUp();
         defined("ENVIRONMENT_DIRECTORY") || define("ENVIRONMENT_DIRECTORY", __DIR__);
         defined("ENVIRONMENT_FILE") || define("ENVIRONMENT_FILE", ".test.env");
+        $this->builder = new PapiBuilder();
     }
 
     public function testFooApiCall(): void
     {
-        $request = $this->createRequest('GET', '/foo');
-        $response = ApiBuilder::getInstance()
-            ->setModules([
+        $request = $this->createRequest(HttpMethod::GET, '/');
+        $response = $this->builder
+            ->addModule(
                 DotEnvModule::class,
                 HttpErrorModule::class
-            ])
-            ->setActions([FooAction::class])
+            )
+            ->addAction(FooGet::class)
             ->build()
             ->handle($request);
 
@@ -40,12 +44,12 @@ final class HttpErrorModuleTest extends ApiBaseTestCase
 
     public function testNotFound(): void
     {
-        $request = $this->createRequest('GET', '/notFoundEndpoint');
-        $response = ApiBuilder::getInstance()
-            ->setModules([
+        $request = $this->createRequest(HttpMethod::GET, '/notFoundEndpoint');
+        $response = $this->builder
+            ->addModule(
                 DotEnvModule::class,
                 HttpErrorModule::class
-            ])
+            )
             ->build()
             ->handle($request);
 
