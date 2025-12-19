@@ -2,14 +2,23 @@
 
 namespace Papimod\HttpError\enumerator;
 
-enum ServerErrorStatus: int
+use Papimod\HttpError\exception\BadGatewayException;
+use Papimod\HttpError\exception\GatewayTimeoutException;
+use Papimod\HttpError\exception\HttpVersionNotSupportedException;
+use Papimod\HttpError\exception\InternalServerErrorException;
+use Papimod\HttpError\exception\NetworkAuthenticationRequired;
+use Papimod\HttpError\exception\NotExtendedException;
+use Papimod\HttpError\exception\NotImplementedException;
+use Papimod\HttpError\exception\ServiceUnavailableException;
+
+enum ServerErrorStatus: string
 {
-    case INTERNAL_SERVER_ERROR = 500;
-    case NOT_IMPLEMENTED = 501;
-    case BAD_GATEWAY = 502;
-    case SERVICE_UNAVAILABLE = 503;
-    case GATEWAY_TIMEOUT = 504;
-    case HTTP_VERSION_NOT_SUPPORTED = 505;
-    case NOT_EXTENDED = 510;
-    case NETWORK_AUTHENTICATION_REQUIRED = 511;
+    case INTERNAL_SERVER_ERROR = InternalServerErrorException::class;
+    case NOT_IMPLEMENTED = NotImplementedException::class;
+    case BAD_GATEWAY = BadGatewayException::class;
+    case SERVICE_UNAVAILABLE = ServiceUnavailableException::class;
+    case GATEWAY_TIMEOUT = GatewayTimeoutException::class;
+    case HTTP_VERSION_NOT_SUPPORTED = HttpVersionNotSupportedException::class;
+    case NOT_EXTENDED = NotExtendedException::class;
+    case NETWORK_AUTHENTICATION_REQUIRED = NetworkAuthenticationRequired::class;
 }
