@@ -8,73 +8,70 @@ use Slim\ResponseEmitter;
 
 class HttpShutdownHandler
 {
-    /**
-     * @var Request
-     */
-    private $request;
+    private readonly Request $request;
 
-    /**
-     * @var HttpErrorHandler
-     */
-    private $errorHandler;
+    private readonly HttpErrorHandler $error_handler;
 
-    /**
-     * @var bool
-     */
-    private $displayErrorDetails;
+    private readonly bool $display_error_details;
 
     /**
      * ShutdownHandler constructor.
      *
      * @param Request           $request
-     * @param HttpErrorHandler  $errorHandler
-     * @param bool              $displayErrorDetails
+     * @param HttpErrorHandler  $error_handler
+     * @param bool              $display_error_details
      */
-    public function __construct(Request $request, HttpErrorHandler $errorHandler, bool $displayErrorDetails)
+    public function __construct(Request $request, HttpErrorHandler $error_handler, bool $display_error_details)
     {
         $this->request = $request;
-        $this->errorHandler = $errorHandler;
-        $this->displayErrorDetails = $displayErrorDetails;
+        $this->error_handler = $error_handler;
+        $this->display_error_details = $display_error_details;
     }
 
-    public function __invoke()
+    public function __invoke(): void
     {
+        $response_emitter = new ResponseEmitter();
         $error = error_get_last();
-        if ($error) {
-            $errorFile = $error['file'];
-            $errorLine = $error['line'];
-            $errorMessage = $error['message'];
-            $errorType = $error['type'];
-            $message = 'An error while processing your request. Please try again later.';
 
-            if ($this->displayErrorDetails) {
-                switch ($errorType) {
+        if ($error) {
+            $message = "[ERROR]";
+
+            if ($this->display_error_details) {
+                switch ($error["type"]) {
                     case E_USER_ERROR:
-                        $message = "FATAL ERROR: {$errorMessage}. ";
-                        $message .= " on line {$errorLine} in file {$errorFile}.";
+                        $message = "[FATAL ERROR] "
+                            . $error["message"]
+                            . ". on line "
+                            . $error["line"]
+                            . " in file "
+                            . $error["file"];
                         break;
 
                     case E_USER_WARNING:
-                        $message = "WARNING: {$errorMessage}";
+                        $message = "[WARNING] " . $error["message"];
                         break;
 
                     case E_USER_NOTICE:
-                        $message = "NOTICE: {$errorMessage}";
+                        $message = "[NOTICE] " . $error["message"];
                         break;
 
                     default:
-                        $message = "ERROR: {$errorMessage}";
-                        $message .= " on line {$errorLine} in file {$errorFile}.";
+                        $message = "[UNKNOWN ERROR] "
+                            . $error["message"]
+                            . ". on line "
+                            . $error["line"]
+                            . " in file "
+                            . $error["file"];
                         break;
                 }
             }
 
             $exception = new HttpInternalServerErrorException($this->request, $message);
 
-            $response = $this->errorHandler->__invoke(
+            $response = $this->error_handler->__invoke(
                 $this->request,
                 $exception,
-                $this->displayErrorDetails,
+                $this->display_error_details,
                 false,
                 false
             );
@@ -83,8 +80,7 @@ class HttpShutdownHandler
                 ob_clean();
             }
 
-            $responseEmitter = new ResponseEmitter();
-            $responseEmitter->emit($response);
+            $response_emitter->emit($response);
         }
     }
 }
