@@ -2,7 +2,7 @@
 
 namespace Papimod\HttpError;
 
-use Slim\Exception\HttpInternalServerErrorException;
+use Papimod\HttpError\exception\InternalServerErrorException;
 use Slim\Psr7\Request;
 use Slim\ResponseEmitter;
 
@@ -66,7 +66,7 @@ class HttpShutdownHandler
                 }
             }
 
-            $exception = new HttpInternalServerErrorException($this->request, $message);
+            $exception = new InternalServerErrorException($this->request, $message);
 
             $response = $this->error_handler->__invoke(
                 $this->request,

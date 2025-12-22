@@ -2,23 +2,32 @@
 
 namespace Papimod\HttpError;
 
-use Papi\ApiModule;
+use Papi\PapiModule;
 use Papimod\Dotenv\DotEnvModule;
+use Papimod\Common\CommonModule;
 
-final class HttpErrorModule extends ApiModule
+final class HttpErrorModule extends PapiModule
 {
-    public ?array $prerequisite_list = [DotEnvModule::class];
-
-    public ?array $event_list = [HttpErrorMiddlewareEvent::class];
-
-    public function configure(): void
+    public static function getPrerequisites(): array
     {
-        if (defined("DISABLE_BODY_PARSING_MIDDLEWARE") === false) {
-            define("DISABLE_BODY_PARSING_MIDDLEWARE", (int) ($_SERVER["DISABLE_BODY_PARSING_MIDDLEWARE"] ?? 0));
-        }
+        return [
+            DotEnvModule::class,
+            CommonModule::class
+        ];
+    }
 
-        if (defined("DISABLE_ROUTING_MIDDLEWARE") === false) {
-            define("DISABLE_ROUTING_MIDDLEWARE", (int) ($_SERVER["DISABLE_ROUTING_MIDDLEWARE"] ?? 0));
-        }
+    public static function getMiddlewares(): array
+    {
+        return [
+            HttpErrorMiddleware::class,
+            HttpShutdownMiddleware::class
+        ];
+    }
+
+    public static function configure(): void
+    {
+        ini_set('display_errors', '0');
+        ini_set('display_startup_errors', '0');
+        error_reporting();
     }
 }

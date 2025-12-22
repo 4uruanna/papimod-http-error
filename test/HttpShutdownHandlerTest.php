@@ -4,15 +4,15 @@ namespace Papimod\HttpError\Test;
 
 use Papi\enumerator\HttpMethod;
 use Papi\PapiBuilder;
-use Papi\Test\mock\FooGet;
 use Papi\Test\PapiTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Papimod\Common\CommonModule;
 use Papimod\Dotenv\DotEnvModule;
 use Papimod\HttpError\HttpErrorModule;
-use PHPUnit\Framework\Attributes\CoversClass;
+use Papimod\HttpError\HttpShutdownHandler;
 
-#[CoversClass(HttpErrorModule::class)]
-final class HttpErrorModuleTest extends PapiTestCase
+#[CoversClass(HttpShutdownHandler::class)]
+final class HttpShutdownHandlerTest extends PapiTestCase
 {
     private PapiBuilder $builder;
 
@@ -24,19 +24,21 @@ final class HttpErrorModuleTest extends PapiTestCase
         $this->builder = new PapiBuilder();
     }
 
-    public function testOk(): void
+    public function testShutdownException(): void
     {
-        $request = $this->createRequest(HttpMethod::GET, '/');
+        $request = $this->createRequest(HttpMethod::GET, '/shutdown');
         $response = $this->builder
             ->addModule(
                 DotEnvModule::class,
                 CommonModule::class,
                 HttpErrorModule::class
             )
-            ->addAction(FooGet::class)
+            ->addAction(ShutdownGet::class)
             ->build()
             ->handle($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $error = json_decode((string) $response->getBody());
+        $this->assertSame(500, $error->code);
+        $this->assertSame("Not Implemented", $error->message);
     }
 }
