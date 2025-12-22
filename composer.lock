@@ -285,16 +285,16 @@
         },
         {
             "name": "papimod/common",
-            "version": "v2.1.0",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/4uruanna/papimod-common.git",
-                "reference": "8213b23677d1eae99c34709c87b159d25d801774"
+                "reference": "cc7d73c48dc2e2c96b312226821565fb5ca99a2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/4uruanna/papimod-common/zipball/8213b23677d1eae99c34709c87b159d25d801774",
-                "reference": "8213b23677d1eae99c34709c87b159d25d801774",
+                "url": "https://api.github.com/repos/4uruanna/papimod-common/zipball/cc7d73c48dc2e2c96b312226821565fb5ca99a2c",
+                "reference": "cc7d73c48dc2e2c96b312226821565fb5ca99a2c",
                 "shasum": ""
             },
             "require": {
@@ -308,8 +308,8 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Papimod\\Routing\\": "source/",
-                    "Papimod\\Routing\\Test\\": "test/"
+                    "Papimod\\Common\\": "source/",
+                    "Papimod\\Common\\Test\\": "test/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -325,9 +325,9 @@
             "description": "Module Papi",
             "support": {
                 "issues": "https://github.com/4uruanna/papimod-common/issues",
-                "source": "https://github.com/4uruanna/papimod-common/tree/v2.1.0"
+                "source": "https://github.com/4uruanna/papimod-common/tree/v2.1.1"
             },
-            "time": "2025-12-18T15:11:06+00:00"
+            "time": "2025-12-20T11:06:30+00:00"
         },
         {
             "name": "papimod/dotenv",
