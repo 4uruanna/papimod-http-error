@@ -27,7 +27,10 @@ final class HttpErrorHandler extends ErrorHandler
         } else {
             $payload["code"] = 500;
 
-            if (($this->exception instanceof Exception || $this->exception instanceof Throwable) && $this->displayErrorDetails) {
+            if (
+                ($this->exception instanceof Exception || $this->exception instanceof Throwable)
+                && $this->displayErrorDetails
+            ) {
                 $payload["message"] = $this->exception->getMessage();
             } else {
                 $payload["message"] = "Not Implemented";

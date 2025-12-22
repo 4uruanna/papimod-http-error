@@ -34,11 +34,18 @@ final class HttpShutdownMiddleware implements PapiMiddleware
     {
         $result = false;
 
-        if (isset($middlewares_map[RoutingMiddleware::class]) && isset($middlewares_map[BodyParsingMiddleware::class])) {
+        if (
+            isset($middlewares_map[RoutingMiddleware::class])
+            && isset($middlewares_map[BodyParsingMiddleware::class])
+        ) {
             $factory = ServerRequestCreatorFactory::create();
             $request = $factory->createServerRequestFromGlobals();
             $error_handler = self::getErrorHandler($app);
-            $shutdown_handler = new HttpShutdownHandler($request, $error_handler, ENVIRONMENT !== Environment::PRODUCTION);
+            $shutdown_handler = new HttpShutdownHandler(
+                $request,
+                $error_handler,
+                ENVIRONMENT !== Environment::PRODUCTION
+            );
 
             if (self::$registered === false) {
                 register_shutdown_function($shutdown_handler);
