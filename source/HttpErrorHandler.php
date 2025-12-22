@@ -38,16 +38,13 @@ final class HttpErrorHandler extends ErrorHandler
             $payload["trace"] = $this->exception->getTraceAsString();
         }
 
-        $response = $this->responseFactory->createResponse($payload["code"]);
+        $response = $this->responseFactory
+            ->createResponse($payload["code"])
+            ->withHeader("Content-Type", "application/json");
 
         $response
             ->getBody()
-            ->write(
-                json_encode(
-                    $payload,
-                    JSON_PRETTY_PRINT
-                )
-            );
+            ->write(json_encode($payload, JSON_PRETTY_PRINT));
 
         return $response;
     }
